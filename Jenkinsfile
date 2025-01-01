@@ -27,6 +27,11 @@ pipeline {
                 bat 'mvn test' // Run unit tests separately
             }
         }
+        stage('Compile') {
+            steps {
+                bat 'mvn compile' // compiles the project
+            }
+        }
         stage('SonarQube Analysis') {
             environment {
                 SONAR_TOKEN = credentials('SonarQube') // Jenkins credential ID for SonarQube token
