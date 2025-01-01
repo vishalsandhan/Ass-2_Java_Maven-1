@@ -39,7 +39,7 @@ pipeline {
              steps {
                 withSonarQubeEnv('sonarqube') {
                     bat """
-                    mvn clean verify sonar:sonar \
+                    mvn clean verify sonar:sonar -e -X \
                     -Dsonar.projectKey=Ass-2-maven-project \
                     -Dsonar.projectName='Ass-2-maven-project' \
                     -Dsonar.host.url=http://localhost:9000 \
