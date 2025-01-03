@@ -44,6 +44,7 @@ pipeline {
                     -Dsonar.projectName='Ass-2-maven-project' \
                     -Dsonar.host.url=http://localhost:9000 \
                     -Dsonar.token=$SONAR_TOKEN
+                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                     """
                 }
             }
