@@ -33,13 +33,13 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('SonarQube') // Jenkins credential ID for SonarQube token
-            }
+            // environment {
+            //     SONAR_TOKEN = credentials('SonarQube') // Jenkins credential ID for SonarQube token
+            // }
              steps {
                 withSonarQubeEnv('sonarqube') {
                     bat """
-                    mvn clean verify sonar:sonar -e -X \
+                    mvn clean verify sonar:sonar \
                     -Dsonar.projectKey=Ass-2-maven-project \
                     -Dsonar.projectName='Ass-2-maven-project' \
                     -Dsonar.host.url=http://localhost:9000 \
