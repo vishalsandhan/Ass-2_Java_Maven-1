@@ -1,35 +1,57 @@
-package com.example.automation;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package com.example;
 
-public class Test {
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
+
+import static org.mockito.Mockito.*;
+
+public class LoginServletTest {
+
     @Test
-    public void testLogin() {
-        // Set up the WebDriver
-        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
-        WebDriver driver = new ChromeDriver();
-        try {
-            // Navigate to the login page
-            driver.get("https://example.com/login");
-            // Locate the username and password fields
-            WebElement usernameField = driver.findElement(By.id("username"));
-            WebElement passwordField = driver.findElement(By.id("password"));
-            WebElement loginButton = driver.findElement(By.id("loginButton"));
-            // Perform login
-            usernameField.sendKeys("testUser");
-            passwordField.sendKeys("testPassword");
-            loginButton.click();
-            // Validate successful login
-            String expectedTitle = "Dashboard";
-            String actualTitle = driver.getTitle();
-            assertEquals(expectedTitle, actualTitle);
-        } finally {
-            // Close the browser
-            driver.quit();
-        }
+    public void testDoPost_validCredentials() throws Exception {
+        // Mock objects
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpSession session = mock(HttpSession.class);
+        PrintWriter writer = mock(PrintWriter.class);
+
+        // Stub methods
+        when(request.getParameter("username")).thenReturn("testUser");
+        when(request.getParameter("password")).thenReturn("testPassword");
+        when(request.getSession()).thenReturn(session);
+        when(response.getWriter()).thenReturn(writer);
+
+        // Test the doPost method
+        LoginServlet servlet = new LoginServlet();
+        servlet.doPost(request, response);
+
+        // Verify session and redirection
+        verify(session).setAttribute("username", "testUser");
+        verify(response).sendRedirect("dashboard");
+    }
+
+    @Test
+    public void testDoPost_invalidCredentials() throws Exception {
+        // Mock objects
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+
+        // Stub methods
+        when(request.getParameter("username")).thenReturn("wrongUser");
+        when(request.getParameter("password")).thenReturn("wrongPassword");
+        when(response.getWriter()).thenReturn(writer);
+
+        // Test the doPost method
+        LoginServlet servlet = new LoginServlet();
+        servlet.doPost(request, response);
+
+        // Verify invalid login behavior
+        verify(writer).println(contains("Invalid credentials"));
     }
 }
